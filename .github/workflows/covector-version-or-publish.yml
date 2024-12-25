@@ -21,17 +21,15 @@ jobs:
       successfulPublish: ${{ steps.covector.outputs.successfulPublish }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v2.2.2
-        with:
-          version: 7
+      - run: corepack enable
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           check-latest: true
           registry-url: 'https://registry.npmjs.org'
 
@@ -51,6 +49,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           command: 'version-or-publish'
           createRelease: true
+          recognizeContributors: true
 
       - name: Create Pull Request With Versions Bumped
         if: steps.covector.outputs.commandRan == 'version'
@@ -70,7 +69,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.ORG_TAURI_BOT_PAT }}
-          repo: tauri-apps/create-tauri-app
+          repository: tauri-apps/create-tauri-app
           event-type: publish-binaries
           client-payload: '{"releaseId": "${{ steps.covector.outputs.create-tauri-app-releaseId }}" }'
 
@@ -81,6 +80,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.ORG_TAURI_BOT_PAT }}
-          repo: tauri-apps/create-tauri-app
+          repository: tauri-apps/create-tauri-app
           event-type: publish-napi
           client-payload: '{"releaseId": "${{ steps.covector.outputs.create-tauri-app-js-releaseId }}" }'

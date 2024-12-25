@@ -16,8 +16,8 @@ const bump = process.argv[2];
 
 const inc = (content) => {
   const re = new RegExp(
-    /(.*__TAG_NAME__\s*=\s*("|')create-tauri-app-v)([0-9])+\.([0-9])+\.([0-9])+(-([a-zA-z]+\.([0-9]+)))?(("|').*)/,
-    "s"
+    /(.*__TAG_NAME__\s*=\s*("|')create-tauri-app-v)([0-9]+)\.([0-9]+)\.([0-9]+)(-([a-zA-z]+\.([0-9]+)))?(("|').*)/,
+    "s",
   );
   const [, before, , major, minor, patch, preStr, , pre, after] =
     re.exec(content);

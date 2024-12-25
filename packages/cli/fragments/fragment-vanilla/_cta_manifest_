@@ -1,7 +1,0 @@
-devPath = ../src
-distDir = ../src
-withGlobalTauri = true
-
-[files]
-tauri.svg = src/assets/tauri.svg
-style.css = src/style.css

@@ -1,4 +1,7 @@
-const changedFilesStr = process.argv[2];
+const trigger = process.argv[2];
+const isCron = trigger === "schedule" || trigger === "workflow_dispatch";
+
+const changedFilesStr = process.argv[3];
 const changedFiles = changedFilesStr.split(",");
 
 const nodeJsTemplates = [
@@ -12,9 +15,18 @@ const nodeJsTemplates = [
   "react-ts",
   "vanilla",
   "vanilla-ts",
+  "preact",
+  "preact-ts",
+  "angular",
 ];
 
 const matrixConfig = [
+  {
+    manager: "cargo",
+    install_cmd: "",
+    run_cmd: "cargo",
+    templates: ["vanilla", "yew", "sycamore", "leptos", "dioxus"],
+  },
   {
     manager: "pnpm",
     install_cmd: "pnpm install",
@@ -34,10 +46,22 @@ const matrixConfig = [
     templates: nodeJsTemplates,
   },
   {
-    manager: "cargo",
+    manager: "bun",
+    install_cmd: "bun install",
+    run_cmd: "bun run",
+    templates: nodeJsTemplates,
+  },
+  {
+    manager: "deno",
+    install_cmd: "deno install",
+    run_cmd: "deno task",
+    templates: nodeJsTemplates,
+  },
+  {
+    manager: "dotnet",
     install_cmd: "",
     run_cmd: "cargo",
-    templates: ["vanilla", "yew", "leptos"],
+    templates: ["blazor"],
   },
 ];
 
@@ -48,19 +72,31 @@ matrixConfig
     let { templates, ...managerInfo } = matrixConfig[i];
     for (const t of ts) {
       if (
+        isCron ||
         changedFiles.some(
           (e) =>
-            e.includes(`packages/cli/fragments/base`) ||
-            e.includes(`packages/cli/fragments/fragment-${t}`) ||
-            e.includes("packages/cli/src") ||
-            e.includes("packages/cli/Cargo.toml") ||
-            e.includes(".github/workflows/templates-test.yml")
+            e.startsWith(`templates/base`) ||
+            e.startsWith(`templates/template-${t}`) ||
+            e.startsWith("src") ||
+            e.startsWith("Cargo.toml") ||
+            e.startsWith(".github/workflows/templates-test.yml"),
         )
       ) {
-        outMatrix.push({
+        const jobInfo = {
           template: t,
-          install_trunk: ["yew", "leptos"].includes(t),
+          node: ["pnpm", "yarn", "npm"].includes(managerInfo.manager),
+          install_trunk: ["yew", "sycamore", "leptos"].includes(t),
+          install_dioxus_cli: t === "dioxus",
+          tauriVersion: "latest",
+          no_bundle_flag: "--no-bundle",
           ...managerInfo,
+        };
+        outMatrix.push(jobInfo);
+        outMatrix.push({
+          ...jobInfo,
+          tauriVersion: 1,
+          no_bundle_flag: "-b none",
+          flags: "--tauri-version 1",
         });
       }
     }

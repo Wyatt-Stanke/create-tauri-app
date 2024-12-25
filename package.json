@@ -1,16 +1,10 @@
 {
   "scripts": {
-    "format": "prettier --write --end-of-line=auto \"./**/*.{js,jsx,ts,tsx,html,css,json,vue}\"",
-    "format:check": "prettier --check --end-of-line=auto \"./**/*.{js,jsx,ts,tsx,html,css,json,vue}\""
-  },
-  "dependencies": {
-    "prettier": "2.8.4"
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "covector": "0.8.0"
+    "prettier": "3.4.2"
   },
-  "resolutions": {
-    "http-cache-semantics": ">=4.1.1",
-    "undici": ">=5.19.1"
-  }
+  "packageManager": "pnpm@9.15.0"
 }

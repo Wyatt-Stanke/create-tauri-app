@@ -10,7 +10,7 @@ on:
       - dev
     paths:
       - '.github/workflows/deploy-scripts.yml'
-      - 'packages/worker/**'
+      - 'worker/**'
 
 jobs:
   deploy:
@@ -18,10 +18,10 @@ jobs:
     if: github.repository_owner == 'tauri-apps'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: cloudflare/wrangler-action@2.0.0
         with:
           command: publish
-          workingDirectory: 'packages/worker'
+          workingDirectory: 'worker'
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}

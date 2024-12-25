@@ -10,13 +10,13 @@ on:
       - dev
     paths:
       - '.github/workflows/cli-test.yml'
-      - 'packages/cli/**'
+      - 'src/**'
       - 'Cargo.lock'
       - 'Cargo.toml'
   pull_request:
     paths:
       - '.github/workflows/cli-test.yml'
-      - 'packages/cli/**'
+      - 'src/**'
       - 'Cargo.lock'
       - 'Cargo.toml'
 
@@ -32,10 +32,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        toolchain: [1.58, stable]
+        toolchain: [1.71, stable]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.toolchain }}
